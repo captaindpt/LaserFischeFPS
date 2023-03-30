@@ -10,14 +10,9 @@ import java.util.List;
  *
  * @author 98910
  */
-class RenameProcessingElement implements ProcessingElement {
-    private String suffix;
+class RenameProcessingElement  {
 
-    public RenameProcessingElement(String suffix) {
-        this.suffix = suffix;
-    }
-
-    public List<Entry> process(List<Entry> input) {
+    public List<Entry> process(List<Entry> entries, String suffix) {
         // Implement rename logic here
         return null;
     }

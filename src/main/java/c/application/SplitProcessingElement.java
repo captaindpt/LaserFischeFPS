@@ -4,18 +4,15 @@
  */
 package c.application;
 
+import java.util.List;
+
 /**
  *
  * @author 98910
  */
-class SplitProcessingElement implements ProcessingElement {
-    private int lines;
+class SplitProcessingElement  {
 
-    public SplitProcessingElement(int lines) {
-        this.lines = lines;
-    }
-
-    public List<Entry> process(List<Entry> input) {
+    public List<Entry> process(List<Entry> entries, int lines) {
         // Implement split logic here
         return null;
     }

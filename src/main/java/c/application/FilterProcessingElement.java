@@ -4,11 +4,26 @@
  */
 package c.application;
 
+import java.util.List;
+
 /**
  *
  * @author 98910
  */
-abstract class FilterProcessingElement implements ProcessingElement {
-    // Add filter implementation methods here
+  class FilterProcessingElement {
+    public List<Entry> nameFilter(List<Entry> entries, String key) {
+        //implement
+    }
     
+    public List<Entry> lengthFilter(List<Entry> entries, long length, String operator) {
+        //implement
+    }
+    
+    public List<Entry> contentFilter(List<Entry> entries, String key) {
+        //implement
+    }
+    
+    public List<Entry> countFilter(List<Entry> entries, String key, int min) {
+        //implement
+    }
 }

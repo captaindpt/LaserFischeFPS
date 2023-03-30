@@ -22,7 +22,10 @@ class RemoteEntry implements Entry {
         this.length = length;
         this.isDirectory = isDirectory;
     }
-
+    
+    public int getEntryID(){
+        return entryId;
+    }
     public String getName() {
         return name;
     }

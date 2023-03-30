@@ -4,16 +4,10 @@
  */
 package c.application;
 
-import java.util.List;
-
 /**
  *
  * @author 98910
  */
-class ListProcessingElement {
-
-    static public List<Entry> process(List<Entry> entries, int max) {
-        // Implement list logic here
-        return null;
-    }
+public class Scenario {
+    
 }
