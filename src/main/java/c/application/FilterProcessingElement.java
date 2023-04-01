@@ -45,7 +45,7 @@ import java.util.List;
        
         for (Entry entry : entries){
             if(entry.getEntryType().toString().equals("Document")){
-             Long fileLen = entry.getElecDocumentSize();  
+             Long fileLen = entry.getLength();  
              
              switch (operator) {
                  case EQ:
@@ -83,8 +83,10 @@ import java.util.List;
               }
            }
         }
+       
         return null;
     }
+    
     
     public static List<Entry> contentFilter(List<Entry> entries, String key) {
         List<Entry> filteredContent = new ArrayList<>();
@@ -96,7 +98,23 @@ import java.util.List;
             }
         }
         return filteredContent;
-    }
+    }   
+    public static List<Entry> countFilter(List<Entry> entries, String key, int min) {
+        List<Entry> filteredContentCount = new ArrayList<>();
+        int Count = 0;
+        for (Entry entry: entries){
+            if(entry.getEntryType().toString().equals("Document")){
+                if(containsKey(entry, key)){
+                    Count++;
+                    if(Count == min){
+                   filteredContentCount.add(entry);
+                    }
+                }
+            }
+        }
+        return filteredContentCount;
+    }  
+    //To check if each line of each file contains key
             public static boolean containsKey(Entry entries, String key){
                 try(BufferedReader reader = new BufferedReader( new FileReader(entries.toString()))){
                     String line;
@@ -108,12 +126,6 @@ import java.util.List;
                     return false;
                 } catch(IOException e){
                     return false;
-                }
-            }
-    
-    
-    public static List<Entry> countFilter(List<Entry> entries, String key, int min) {
-        //implement
-        return null;
+          }
     }
 }
