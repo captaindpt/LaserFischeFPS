@@ -4,7 +4,9 @@
  */
 package c.application;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.BufferedReader;
 import com.laserfiche.repository.api.clients.impl.model.Entry;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,9 +87,30 @@ import java.util.List;
     }
     
     public static List<Entry> contentFilter(List<Entry> entries, String key) {
-        //implement
-        return null;
+        List<Entry> filteredContent = new ArrayList<>();
+        for (Entry entry: entries){
+            if(entry.getEntryType().toString().equals("Document")){
+                if(containsKey(entry, key)){
+                   filteredContent.add(entry); 
+                }
+            }
+        }
+        return filteredContent;
     }
+            public static boolean containsKey(Entry entries, String key){
+                try(BufferedReader reader = new BufferedReader( new FileReader(entries.toString()))){
+                    String line;
+                    while((line = reader.readLine()) != null){
+                        if (line.contains(key)){
+                            return true;
+                        }
+                    }
+                    return false;
+                } catch(IOException e){
+                    return false;
+                }
+            }
+    
     
     public static List<Entry> countFilter(List<Entry> entries, String key, int min) {
         //implement
