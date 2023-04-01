@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package c.application;
-import java.io.File;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -20,26 +20,15 @@ import java.util.List;
        public enum Operator{
             EQ, NEQ, GT, GTE, LT, LTE
         }
-    public List<Entry> nameFilter(List<Entry> entries, String key) {
-        List<Entry> filteredNames = new ArrayList<>();
-        
-        if (entries instanceof RemoteEntry){
+    public static List<Entry> nameFilter(List<Entry> entries, String key) {
+        List<Entry> filteredNames = new ArrayList<>();  
         for (Entry entry: entries){
             if(entry.getName().contains(key)){
             filteredNames.add(entry);
             }
          }
-       }
-        else if (entries instanceof LocalEntry){
-        for (Entry entry: entries){
-            if(entry.getName().contains(key)){
-            filteredNames.add(entry);
-            }
-        }
-      }
         return filteredNames;
     }
-    
     public static List<Entry> lengthFilter(List<Entry> entries, long length, Operator operator) {
         List<Entry> filteredLen = new ArrayList<>();
        
@@ -86,13 +75,11 @@ import java.util.List;
        
         return null;
     }
-    
-    
     public static List<Entry> contentFilter(List<Entry> entries, String key) {
         List<Entry> filteredContent = new ArrayList<>();
         for (Entry entry: entries){
             if(entry.getEntryType().toString().equals("Document")){
-                if(containsKey(entry, key)){
+                if(containsKey(entry, key) == true){
                    filteredContent.add(entry); 
                 }
             }
