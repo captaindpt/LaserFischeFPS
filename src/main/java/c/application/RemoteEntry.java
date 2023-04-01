@@ -15,7 +15,7 @@ class RemoteEntry implements Entry {
     private long length;
     private boolean isDirectory;
 
-    public RemoteEntry(String repoId, int entryId, String name, long length, boolean isDirectory) {
+    public RemoteEntry(String repoId, int entryId) {
         this.repoId = repoId;
         this.entryId = entryId;
         this.name = name;

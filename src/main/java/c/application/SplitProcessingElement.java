@@ -10,9 +10,9 @@ import java.util.List;
  *
  * @author 98910
  */
-class SplitProcessingElement  {
+class SplitProcessingElement implements ProcessingElement {
 
-    public List<Entry> process(List<Entry> entries, int lines) {
+    static public List<Entry> process(List<Entry> entries, int lines) {
         // Implement split logic here
         return null;
     }

@@ -10,20 +10,20 @@ import java.util.List;
  *
  * @author 98910
  */
-  class FilterProcessingElement {
-    public List<Entry> nameFilter(List<Entry> entries, String key) {
+  class FilterProcessingElement implements ProcessingElement {
+    static public List<Entry> nameFilter(List<Entry> entries, String key) {
         //implement
     }
     
-    public List<Entry> lengthFilter(List<Entry> entries, long length, String operator) {
+    static public List<Entry> lengthFilter(List<Entry> entries, long length, String operator) {
         //implement
     }
     
-    public List<Entry> contentFilter(List<Entry> entries, String key) {
+    static public List<Entry> contentFilter(List<Entry> entries, String key) {
         //implement
     }
     
-    public List<Entry> countFilter(List<Entry> entries, String key, int min) {
+    static public List<Entry> countFilter(List<Entry> entries, String key, int min) {
         //implement
     }
 }
