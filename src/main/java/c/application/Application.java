@@ -4,6 +4,14 @@
 
 package c.application;
 
+
+
+import static c.application.FilterProcessingElement.Operator.GTE;
+import static c.application.FilterProcessingElement.Operator.LT;
+import static c.application.FilterProcessingElement.Operator.LTE;
+import static c.application.FilterProcessingElement.Operator.EQ;
+import static c.application.FilterProcessingElement.Operator.GT;
+import static c.application.FilterProcessingElement.Operator.NEQ;
 import com.laserfiche.api.client.model.AccessKey;
 import com.laserfiche.repository.api.RepositoryApiClient;
 import com.laserfiche.repository.api.RepositoryApiClientImpl;
@@ -78,7 +86,6 @@ public class Application {
         };
         
         //nameFilter testing **Functional**
-
         List<Entry> entries2 = result.getValue();
         List<Entry> filteredNames = FilterProcessingElement.nameFilter(entries2, "900k");
         for (Entry entry_: filteredNames){
@@ -86,15 +93,25 @@ public class Application {
         }; 
         
         //lengthFilter testing
-        //implement test instance here
+        //Cannot figure out how to get Remote Entry length
+        List<Entry> filteredNames4 = FilterProcessingElement.lengthFilter(entries2, 1, "GT");
+        for (Entry entry_: filteredNames4){
+            System.out.println("Name: " + entry_.getName() + ", Size: " + entry_);
+        };
         
         //contentFilter testing
-        //Check for Document type functional
+        //Check for 'EntryType' functional
         //Read doc and filter 'key' containers, bugged
         List<Entry> filteredNames2 = FilterProcessingElement.contentFilter(entries2, "89");
         for (Entry entry_: filteredNames2){
             System.out.println(entry_.getName());
         }; 
+        
+        //countFilter testing
+        List<Entry> filteredNames3 = FilterProcessingElement.countFilter(entries2, "89", 1);
+        for (Entry entry_: filteredNames3){
+            System.out.println(entry_.getName());
+        };
        
         
         client.getEntriesClient()

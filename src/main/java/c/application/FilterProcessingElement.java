@@ -8,8 +8,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
 import com.laserfiche.repository.api.clients.impl.model.Entry;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.file.Files;
+import java.util.function.Consumer;
+import com.laserfiche.repository.api.clients.*;
 
 /**
  *
@@ -29,40 +35,43 @@ import java.util.List;
          }
         return filteredNames;
     }
-    public static List<Entry> lengthFilter(List<Entry> entries, long length, Operator operator) {
+    public List<Entry> lengthFilter(List<Entry> entries, int length, String operator) {
         List<Entry> filteredLen = new ArrayList<>();
-       
+        int id;
+        String repoId = "r-0001d410ba56";
         for (Entry entry : entries){
             if(entry.getEntryType().toString().equals("Document")){
-             Long fileLen = entry.getLength();  
-             
-             switch (operator) {
-                 case EQ:
-                     if(fileLen == length){
+             Long fileLen;
+             id = entry.getId();
+             fileLen = Long.valueOf(EntriesClient.getDocumentContentType(repoId, id).join().get("Content-Length"));
+            
+            switch (operator) {
+                case "EQ":
+                    if(fileLen == length){
                          filteredLen.add(entry);
                      }
                      break;
-                 case NEQ: 
+                 case "NEQ": 
                      if (fileLen != length){
                          filteredLen.add(entry);
                      }
                      break;
-                 case GT: 
+                 case "GT": 
                      if(fileLen > length) {
-                         filteredLen.add(entry);
+                        filteredLen.add(entry);
                      }
                      break;
-                 case GTE: 
+                 case "GTE": 
                      if(fileLen >= length){
                          filteredLen.add(entry);
                      }
                      break;
-                 case LTE: 
+                 case "LTE": 
                      if(fileLen <= length){
                          filteredLen.add(entry);
                      }
                      break;
-                 case LT: 
+                 case "LT": 
                      if(fileLen < length){
                          filteredLen.add(entry);
                      }
@@ -71,9 +80,8 @@ import java.util.List;
                      break;
               }
            }
-        }
-       
-        return null;
+       } 
+        return filteredLen;
     }
     public static List<Entry> contentFilter(List<Entry> entries, String key) {
         List<Entry> filteredContent = new ArrayList<>();
