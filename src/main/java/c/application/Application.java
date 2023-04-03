@@ -63,17 +63,15 @@ public class Application {
         
         //lengthFilter testing
         //Cannot figure out how to get Remote Entry length
-        //List<Entry> filteredNames4 = FilterProcessingElement.lengthFilter(entries2, 1, GT);
-        //for (Entry entry_: filteredNames4){
-        //    System.out.println("Name: " + entry_.getName() + ", Size: " + entry_);
-        //};
+         FilterProcessingElement.lengthFilter(entries2, 1000000L, LT);
+        
         
         //contentFilter testing, **Functional**
         //FilterProcessingElement.contentFilter(entries2, "Tadanac, Kootenay Boundary, British Columbia, BC");
         
         
         //countFilter testing, **Functional**
-        FilterProcessingElement.countFilter(entries2, "ON", 6000);
+        //FilterProcessingElement.countFilter(entries2, "ON", 6000);
         
         //Test DownloadFile method
         //Application app = new Application();

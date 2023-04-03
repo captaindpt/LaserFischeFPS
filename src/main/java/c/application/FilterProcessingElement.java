@@ -42,53 +42,87 @@ import java.nio.file.Paths;
          }
         return filteredNames;
     }
-     public static List<Entry> lengthFilter(List<Entry> entries, int length, Operator operator) {
-        List<Entry> filteredLen = new ArrayList<>();
-        int id;
-        String repoId = "r-0001d410ba56";
-        for (Entry entry : entries){
-            if(entry.getEntryType().toString().equals("Document")){
-             Long fileLen;
-             id = entry.getId();
-             fileLen = Long.valueOf(EntriesClient.getDocumentContentType(repoId, id).join().get("Content-Length"));
-            
+     public static List<Entry> lengthFilter(List<Entry> entries, Long len, Operator operator) {
+        String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
+        String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
+		String repositoryId = "r-0001d410ba56";
+                AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
+  RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
+                servicePrincipalKey, accessKey);
+        // Download a list of entries from Repo 
+        List<String> filteredContent = new ArrayList<>();
+        for(Entry entryy: entries){
+        int entryIdToDownload = entryy.getId() ;
+        final String FILE_NAME = entryy.getName() + ".txt";
+        Consumer<InputStream> consumer = inputStream -> {
+            File exportedFile = new File(FILE_NAME);
+            try (FileOutputStream outputStream = new FileOutputStream(exportedFile)) {
+                byte[] buffer = new byte[1024];
+                while (true) {
+                    int length = inputStream.read(buffer);
+                    if (length == -1) {
+                        break;
+                    }
+                    outputStream.write(buffer, 0, length);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        client.getEntriesClient().exportDocument(repositoryId, entryIdToDownload, null, consumer).join();
+        Path path = Paths.get(FILE_NAME);
+        String pathstr = path.toAbsolutePath().toString();
+        File file = new File(pathstr);
+        Long fileLen = file.length();
             switch (operator) {
                 case EQ:
-                    if(fileLen == length){
-                         filteredLen.add(entry);
+                    if(fileLen == len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
                      }
                      break;
                  case NEQ: 
-                     if (fileLen != length){
-                         filteredLen.add(entry);
+                     if (fileLen != len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
                      }
                      break;
                  case GT: 
-                     if(fileLen > length) {
-                        filteredLen.add(entry);
+                     if(fileLen > len) {
+                        filteredContent.add(file.getName());
+                        System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
                      }
                      break;
                  case GTE: 
-                     if(fileLen >= length){
-                         filteredLen.add(entry);
+                     if(fileLen >= len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
                      }
                      break;
                  case LTE: 
-                     if(fileLen <= length){
-                         filteredLen.add(entry);
+                     if(fileLen <= len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
                      }
                      break;
                  case LT: 
-                     if(fileLen < length){
-                         filteredLen.add(entry);
+                     if(fileLen < len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() + "has a length = " + file.length() + " bytes"); 
                      }
                      break;
                  default: 
                      break;
               }
            }
-       } 
-        return filteredLen;
+        client.close(); 
+        return null;
     }
     public static List<Entry> contentFilter(List<Entry> entries, String key) {
         String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
