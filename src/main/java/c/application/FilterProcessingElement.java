@@ -4,6 +4,9 @@
  */
 package c.application;
 
+import com.laserfiche.api.client.model.AccessKey;
+import com.laserfiche.repository.api.RepositoryApiClient;
+import com.laserfiche.repository.api.RepositoryApiClientImpl;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
@@ -16,12 +19,22 @@ import java.util.List;
 import java.nio.file.Files;
 import java.util.function.Consumer;
 import com.laserfiche.repository.api.clients.*;
+import com.laserfiche.repository.api.clients.impl.EntriesClientImpl;
+import com.laserfiche.repository.api.clients.impl.model.ODataValueContextOfIListOfEntry;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
  * @author 98910
  */
   class FilterProcessingElement {
+  String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
+        String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
+		String repositoryId = "r-0001d410ba56";
+                AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
+  RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
+                servicePrincipalKey, accessKey);
       //Operator enum used for lengthFilter
        public enum Operator{
             EQ, NEQ, GT, GTE, LT, LTE
@@ -35,7 +48,7 @@ import com.laserfiche.repository.api.clients.*;
          }
         return filteredNames;
     }
-    public List<Entry> lengthFilter(List<Entry> entries, int length, String operator) {
+     public static List<Entry> lengthFilter(List<Entry> entries, int length, Operator operator) {
         List<Entry> filteredLen = new ArrayList<>();
         int id;
         String repoId = "r-0001d410ba56";
@@ -46,32 +59,32 @@ import com.laserfiche.repository.api.clients.*;
              fileLen = Long.valueOf(EntriesClient.getDocumentContentType(repoId, id).join().get("Content-Length"));
             
             switch (operator) {
-                case "EQ":
+                case EQ:
                     if(fileLen == length){
                          filteredLen.add(entry);
                      }
                      break;
-                 case "NEQ": 
+                 case NEQ: 
                      if (fileLen != length){
                          filteredLen.add(entry);
                      }
                      break;
-                 case "GT": 
+                 case GT: 
                      if(fileLen > length) {
                         filteredLen.add(entry);
                      }
                      break;
-                 case "GTE": 
+                 case GTE: 
                      if(fileLen >= length){
                          filteredLen.add(entry);
                      }
                      break;
-                 case "LTE": 
+                 case LTE: 
                      if(fileLen <= length){
                          filteredLen.add(entry);
                      }
                      break;
-                 case "LT": 
+                 case LT: 
                      if(fileLen < length){
                          filteredLen.add(entry);
                      }
@@ -84,21 +97,60 @@ import com.laserfiche.repository.api.clients.*;
         return filteredLen;
     }
     public static List<Entry> contentFilter(List<Entry> entries, String key) {
-        List<Entry> filteredContent = new ArrayList<>();
-        for (Entry entry: entries){
-            if(entry.getEntryType().toString().equals("Document")){
-                if(containsKey(entry, key) == true){
-                   filteredContent.add(entry); 
+        String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
+        String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
+		String repositoryId = "r-0001d410ba56";
+                AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
+  RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
+                servicePrincipalKey, accessKey);
+        // Download a list of entries from Repo 
+        List<String> filteredContent = new ArrayList<>();
+        int count = 0;
+        for(Entry entryy: entries){
+            count++;
+        int entryIdToDownload = entryy.getId() ;
+        final String FILE_NAME = entryy.getName() + ".txt";
+        Consumer<InputStream> consumer = inputStream -> {
+            File exportedFile = new File(FILE_NAME);
+            try (FileOutputStream outputStream = new FileOutputStream(exportedFile)) {
+                byte[] buffer = new byte[1024];
+                while (true) {
+                    int length = inputStream.read(buffer);
+                    if (length == -1) {
+                        break;
+                    }
+                    outputStream.write(buffer, 0, length);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        client.getEntriesClient().exportDocument(repositoryId, entryIdToDownload, null, consumer).join();
+        Path path = Paths.get(FILE_NAME);
+        String pathstr = path.toAbsolutePath().toString();
+        File file = new File(pathstr);
+            if(pathstr.contains(".txt")){
+                if(containsKey(file, key)){
+                   filteredContent.add(file.getName());
+                   System.out.println(file.getName());
                 }
             }
         }
-        return filteredContent;
+        client.close();
+        return null; 
     }   
     public static List<Entry> countFilter(List<Entry> entries, String key, int min) {
         List<Entry> filteredContentCount = new ArrayList<>();
         int Count = 0;
         for (Entry entry: entries){
             if(entry.getEntryType().toString().equals("Document")){
+                entry.toString();
                 if(containsKey(entry, key)){
                     Count++;
                     if(Count == min){
@@ -110,8 +162,8 @@ import com.laserfiche.repository.api.clients.*;
         return filteredContentCount;
     }  
     //To check if each line of each file contains key
-            public static boolean containsKey(Entry entries, String key){
-                try(BufferedReader reader = new BufferedReader( new FileReader(entries.toString()))){
+            public static boolean containsKey(File entries, String key){
+                try(BufferedReader reader = new BufferedReader( new FileReader(entries))){
                     String line;
                     while((line = reader.readLine()) != null){
                         if (line.contains(key)){
@@ -124,3 +176,5 @@ import com.laserfiche.repository.api.clients.*;
           }
     }
 }
+
+
