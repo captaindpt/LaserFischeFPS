@@ -29,12 +29,6 @@ import java.nio.file.Paths;
  * @author 98910
  */
   class FilterProcessingElement {
-  String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
-        String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
-		String repositoryId = "r-0001d410ba56";
-                AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
-  RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
-                servicePrincipalKey, accessKey);
       //Operator enum used for lengthFilter
        public enum Operator{
             EQ, NEQ, GT, GTE, LT, LTE
@@ -146,30 +140,79 @@ import java.nio.file.Paths;
         return null; 
     }   
     public static List<Entry> countFilter(List<Entry> entries, String key, int min) {
-        List<Entry> filteredContentCount = new ArrayList<>();
-        int Count = 0;
-        for (Entry entry: entries){
-            if(entry.getEntryType().toString().equals("Document")){
-                entry.toString();
-                if(containsKey(entry, key)){
-                    Count++;
-                    if(Count == min){
-                   filteredContentCount.add(entry);
+        String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
+        String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
+		String repositoryId = "r-0001d410ba56";
+                AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
+  RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
+                servicePrincipalKey, accessKey);
+        // Download a list of entries from Repo 
+        List<String> filteredContent = new ArrayList<>();
+        for(Entry entryy: entries){
+        int entryIdToDownload = entryy.getId() ;
+        final String FILE_NAME = entryy.getName() + ".txt";
+        Consumer<InputStream> consumer = inputStream -> {
+            File exportedFile = new File(FILE_NAME);
+            try (FileOutputStream outputStream = new FileOutputStream(exportedFile)) {
+                byte[] buffer = new byte[1024];
+                while (true) {
+                    int length = inputStream.read(buffer);
+                    if (length == -1) {
+                        break;
+                    }
+                    outputStream.write(buffer, 0, length);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        client.getEntriesClient().exportDocument(repositoryId, entryIdToDownload, null, consumer).join();
+        Path path = Paths.get(FILE_NAME);
+        String pathstr = path.toAbsolutePath().toString();
+        File file = new File(pathstr);
+            if(pathstr.contains(".txt")){
+                if(ModifiedcontainsKey(file, key, min)){
+                   filteredContent.add(file.getName());
+                   System.out.println(file.getName());
                     }
                 }
             }
-        }
-        return filteredContentCount;
+        client.close();
+        return null;
     }  
     //To check if each line of each file contains key
-            public static boolean containsKey(File entries, String key){
-                try(BufferedReader reader = new BufferedReader( new FileReader(entries))){
+            public static boolean containsKey(File FILE_NAME, String key){
+                try(BufferedReader reader = new BufferedReader( new FileReader(FILE_NAME))){
                     String line;
                     while((line = reader.readLine()) != null){
                         if (line.contains(key)){
                             return true;
                         }
                     }
+                    return false;
+                } catch(IOException e){
+                    return false;
+          }
+    }
+  //ModifiedcontainsKey is similar to containsKey with small changes for countFilter
+       public static boolean ModifiedcontainsKey(File FILE_NAME, String key, int min){
+                try(BufferedReader reader = new BufferedReader( new FileReader(FILE_NAME))){
+                    String line;
+                    int count = 0;
+                    while((line = reader.readLine()) != null){
+                        if (line.contains(key)){
+                            count++;
+                        }
+                        if (count>=min){
+                            return true;
+                            }
+                        }
                     return false;
                 } catch(IOException e){
                     return false;
