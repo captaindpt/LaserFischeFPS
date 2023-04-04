@@ -61,7 +61,7 @@ import java.nio.file.Paths;
                 RemoteEntry entry = (RemoteEntry)entryy;
         int entryIdToDownload = entry.getEntryID();
         String repoID = entry.getRepoId();
-        final String FILE_NAME = entry.getName() + ".txt";
+        final String FILE_NAME = entryy.getName() + ".txt";
         Consumer<InputStream> consumer = inputStream -> {
             File exportedFile = new File(FILE_NAME);
             try (FileOutputStream outputStream = new FileOutputStream(exportedFile)) {
@@ -196,7 +196,7 @@ import java.nio.file.Paths;
             count++;
         int entryIdToDownload = entry.getEntryID();
         String RepoId = entry.getRepoId(); 
-        final String FILE_NAME = entry.getName() + ".txt";
+        final String FILE_NAME = entryy.getName() + ".txt";
         Consumer<InputStream> consumer = inputStream -> {
             File exportedFile = new File(FILE_NAME);
             try (FileOutputStream outputStream = new FileOutputStream(exportedFile)) {
@@ -249,7 +249,7 @@ import java.nio.file.Paths;
             RemoteEntry entry = (RemoteEntry)entryy;
         int entryIdToDownload = entry.getEntryID() ;
         String RepoId = entry.getRepoId();
-        final String FILE_NAME = entry.getName() + ".txt";
+        final String FILE_NAME = entryy.getName() + ".txt";
         Consumer<InputStream> consumer = inputStream -> {
             File exportedFile = new File(FILE_NAME);
             try (FileOutputStream outputStream = new FileOutputStream(exportedFile)) {
