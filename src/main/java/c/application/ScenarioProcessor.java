@@ -26,7 +26,6 @@ public class ScenarioProcessor {
 
 //        String jsonFilePath = args[0];
         String jsonFilePath = "C:\\Users\\98910\\Downloads\\Test Scenario.json";
-
         try (FileReader reader = new FileReader(jsonFilePath)) {
             JSONParser jsonParser = new JSONParser();
             JSONObject scenario = (JSONObject) jsonParser.parse(reader);
@@ -52,7 +51,7 @@ public class ScenarioProcessor {
                     params.add((JSONObject)params0.get(i));
                 }
                 switch (type){
-                    case "Name Filter":
+                    case "Name Filter" -> {
                         String Key = "";
                         for(JSONObject q : params){
                             if(q.get("name").equals("Key")){
@@ -60,8 +59,8 @@ public class ScenarioProcessor {
                             }
                         }
                         FilterProcessingElement.nameFilter(entries, Key);
-                        break;
-                    case "Length Filter":
+                    }
+                    case "Length Filter" -> {
                         String Operator = "";
                         long Length = 0;
                         for(JSONObject q : params){
@@ -73,8 +72,8 @@ public class ScenarioProcessor {
                             }
                         }
                         FilterProcessingElement.lengthFilter(entries, Length, Operator);
-                        break;
-                    case "Content Filter":
+                    }
+                    case "Content Filter" -> {
                         String Key1 = "";
                         for(JSONObject q : params){
                             if(q.get("name").equals("Key")){
@@ -82,8 +81,8 @@ public class ScenarioProcessor {
                             }
                         }
                         FilterProcessingElement.contentFilter(entries, Key1);
-                        break;
-                    case "Count Filter":
+                    }
+                    case "Count Filter" -> {
                         String Key2 = "";
                         int min = 0;
                         for(JSONObject q : params){
@@ -95,8 +94,8 @@ public class ScenarioProcessor {
                             }
                         }
                         FilterProcessingElement.countFilter(entries, Key2, min);
-                        break;
-                    case "Split":
+                    }
+                    case "Split" -> {
                         int Lines = 0;
                         for(JSONObject q : params){
                             if(q.get("name").equals("Lines")){
@@ -104,9 +103,8 @@ public class ScenarioProcessor {
                             }
                         }
                         SplitProcessingElement.process(entries, Lines);
-
-                        break;
-                    case "List":
+                    }
+                    case "List" -> {
                         int max = 0;
                         for(JSONObject q : params){
                             if(q.get("name").equals("Max")){
@@ -114,8 +112,8 @@ public class ScenarioProcessor {
                             }
                         }
                         ListProcessingElement.process(entries, max);
-                        break;
-                    case "Rename":
+                    }
+                    case "Rename" -> {
                         String Suffix = "";
                         for(JSONObject q : params){
                             if(q.get("name").equals("Suffix")){
@@ -123,10 +121,8 @@ public class ScenarioProcessor {
                             }
                         }
                         RenameProcessingElement.process(entries, Suffix);
-                        break;
-                    case default:
-                        PrintProcessingElement.process(entries);
-                        break;
+                    }
+                    default -> PrintProcessingElement.process(entries);
                 }
             }
             System.out.println(proc_els.get(1).getClass().getName());
@@ -134,5 +130,6 @@ public class ScenarioProcessor {
             System.out.println("Error parsing JSON file:");
             e.printStackTrace();
         }
+
     }
 }

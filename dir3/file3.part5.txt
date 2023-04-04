@@ -1,0 +1,3 @@
+pear
+strawberry
+banana
