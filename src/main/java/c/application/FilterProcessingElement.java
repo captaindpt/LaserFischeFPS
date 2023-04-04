@@ -10,7 +10,7 @@ import com.laserfiche.repository.api.RepositoryApiClientImpl;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.BufferedReader;
-import com.laserfiche.repository.api.clients.impl.model.Entry;
+import com.laserfiche.repository.api.clients.impl.model.Entry; 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -34,14 +34,21 @@ import java.nio.file.Paths;
             EQ, NEQ, GT, GTE, LT, LTE
         }
     public static List<Entry> nameFilter(List<Entry> entries, String key) {
-        List<Entry> filteredNames = new ArrayList<>();  
-        for (Entry entry: entries){
+        List<Entry> filteredNames = new ArrayList<>();
+        for(Entry entry: entries) {
+            if(entry.getClass().getName() == "com.laserfiche.repository.api.clients.impl.model.Document"){
             if(entry.getName().contains(key)){
             filteredNames.add(entry);
-            }
+           }
+        } else {
+            if(entry.getName().contains(key)){
+            filteredNames.add(entry);
+           }
          }
+      } 
         return filteredNames;
     }
+   
      public static List<Entry> lengthFilter(List<Entry> entries, Long len, Operator operator) {
         String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
         String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
@@ -52,7 +59,8 @@ import java.nio.file.Paths;
         // Download a list of entries from Repo 
         List<String> filteredContent = new ArrayList<>();
         for(Entry entryy: entries){
-        int entryIdToDownload = entryy.getId() ;
+            if (entryy.getClass().getName().toString() == "com.laserfiche.repository.api.clients.impl.model.Document"){
+        int entryIdToDownload = entryy.getId();
         final String FILE_NAME = entryy.getName() + ".txt";
         Consumer<InputStream> consumer = inputStream -> {
             File exportedFile = new File(FILE_NAME);
@@ -114,14 +122,62 @@ import java.nio.file.Paths;
                  case LT: 
                      if(fileLen < len){
                          filteredContent.add(file.getName());
-                         System.out.println(file.getName() + "has a length = " + file.length() + " bytes"); 
+                         System.out.println(file.getName() + " has a length = " + file.length() + " bytes"); 
                      }
                      break;
                  default: 
                      break;
               }
-           }
-        client.close(); 
+            
+            } else {
+                String FILE_NAME = entryy.getName().toString();
+                Path path = Paths.get(FILE_NAME);
+        String pathstr = path.toAbsolutePath().toString();
+        File file = new File(pathstr);
+        Long fileLen = file.length();
+            switch (operator) {
+                case EQ:
+                    if(fileLen == len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
+                     }
+                     break;
+                 case NEQ: 
+                     if (fileLen != len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
+                     }
+                     break;
+                 case GT: 
+                     if(fileLen > len) {
+                        filteredContent.add(file.getName());
+                        System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
+                     }
+                     break;
+                 case GTE: 
+                     if(fileLen >= len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
+                     }
+                     break;
+                 case LTE: 
+                     if(fileLen <= len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() + " has a length = " + file.length() + " bytes");
+                     }
+                     break;
+                 case LT: 
+                     if(fileLen < len){
+                         filteredContent.add(file.getName());
+                         System.out.println(file.getName() +  " has a length = " + file.length() + " bytes"); 
+                     }
+                     break;
+                 default: 
+                     break;
+              }
+            }
+        } 
+        client.close();
         return null;
     }
     public static List<Entry> contentFilter(List<Entry> entries, String key) {
@@ -220,7 +276,7 @@ import java.nio.file.Paths;
         client.close();
         return null;
     }  
-    //To check if each line of each file contains key
+    //To check if each line of each file contains key for content filter
             public static boolean containsKey(File FILE_NAME, String key){
                 try(BufferedReader reader = new BufferedReader( new FileReader(FILE_NAME))){
                     String line;
