@@ -17,15 +17,14 @@ import org.json.simple.parser.ParseException;
 
 
 public class ScenarioProcessor {
-    public static void main(String[] args) throws FileNotFoundException, ParseException {
-////        public static void main(String[] args) {
+    public static void ParseAndExecute(String jsonFilePath) throws FileNotFoundException, ParseException {
 //        if (args.length == 0) {
 //            System.out.println("Please provide the JSON file path as the first command line argument.");
 //            System.exit(1);
 //        }
 
 //        String jsonFilePath = args[0];
-        String jsonFilePath = "C:\\Users\\98910\\Downloads\\Test Scenario.json";
+//        String jsonFilePath = "C:\\Users\\98910\\Downloads\\Test Scenario.json";
         try (FileReader reader = new FileReader(jsonFilePath)) {
             JSONParser jsonParser = new JSONParser();
             JSONObject scenario = (JSONObject) jsonParser.parse(reader);
