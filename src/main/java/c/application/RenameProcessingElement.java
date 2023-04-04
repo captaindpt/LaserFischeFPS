@@ -13,7 +13,15 @@ import java.util.List;
 class RenameProcessingElement implements ProcessingElement {
 
     static public List<Entry> process(List<Entry> entries, String suffix) {
-        // Implement rename logic here
-        return null;
+        List<Entry> updatedEntries = new ArrayList<>();
+        for (Entry entry:entries){
+            String oldname = entry.getName();
+            String newName = oldname.substring(0,oldname.lastIndexOf(".")) + suffix + oldname.substring(oldname.lastIndexOf("."));
+            Entry updatedEntry = new Entry(updatedName, entry.getSize());
+            updatedEntries.add(updatedEntry);
+        }
+        
+            
+        return updatedEntries;
     }
 }
