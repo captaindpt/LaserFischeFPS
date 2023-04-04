@@ -16,7 +16,7 @@ import com.laserfiche.api.client.model.AccessKey;
 import com.laserfiche.repository.api.RepositoryApiClient;
 import com.laserfiche.repository.api.RepositoryApiClientImpl;
 import com.laserfiche.repository.api.clients.impl.model.ODataValueContextOfIListOfEntry;
-import com.laserfiche.repository.api.clients.impl.model.Entry2;
+import com.laserfiche.repository.api.clients.impl.model.Entry;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,58 +36,8 @@ import c.application.LocalEntry;
 public class Application {
 
     public static void main(String[] args) { 
-       String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
-        String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
-		String repositoryId = "r-0001d410ba56";
-        AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
-
-        RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
-                servicePrincipalKey, accessKey);
-
-        // Get information about the ROOT entry, i.e. entry with ID=1
-        int rootEntryId = 15;
-        com.laserfiche.repository.api.clients.impl.model.Entry entry = client.getEntriesClient()
-                .getEntry(repositoryId, rootEntryId, null).join();
-
-        System.out.println(String.format("Entry ID: %d, Name: %s, EntryType: %s, FullPath: %s",entry.getId(), entry.getName(), entry.getEntryType(), entry.getFullPath()));
-
-        // Create a list of all files within the root entry
-        ODataValueContextOfIListOfEntry result = client
-                .getEntriesClient()
-                .getEntryListing(repositoryId, rootEntryId, true, null, null, null, null, null, "name", null, null, null).join();
-    
-////////////////////////////////////////////////////////////////////////////////
-//FilterProcessingElement test instances
-       
-        //nameFilter testing: remote entries **Functional**
-        List<Entry> entries = result.getValue();
-        // List<Entry> filteredNames = FilterProcessingElement.nameFilter(entries, "copy");
-        //for (Entry entry_: filteredNames){
-        //     System.out.println(entry_.getName());
-        // }  
-        
-        //lengthFilter testing: remote entries **Functional**
-        FilterProcessingElement.lengthFilter(entries, 9000L, GT);
-        
-        
-        //contentFilter testing: remote entries **Functional**
-        //FilterProcessingElement.contentFilter(entries, "Tadanac, Kootenay Boundary, British Columbia, BC");
-        
-        
-        //countFilter testing: remote entries **Functional** 
-        //FilterProcessingElement.countFilter(entries, "ON", 6000);
-        
-       //nameFilter: Local files 
-       //List<Entry> localEnt = LocalEntry.GenerateListOfEntry("C:\\Users\\User\\OneDrive - University of Guelph\\Documents\\TestFolder");
-       // FilterProcessingElement.lengthFilter(localEnt, 1L, GT);
-        
-////////////////////////////////////////////////////////////////////////////////
-//Test DownloadFile method
-        
-        //Application app = new Application();
-        //System.out.println("Path: " + app.DownloadFile("r-0001d410ba56", 7));
-        client.close();
-    } 
+        System.out.println("Hello world");
+      } 
     
 ////////////////////////////////////////////////////////////////////////////////    
 //Method to DownloadFile from Laserfiche Repo, using repoId and entryId
@@ -98,7 +48,7 @@ public class Application {
         AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
     RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
                 servicePrincipalKey, accessKey);  
-    // Download a list of entries from Repo 
+    
       com.laserfiche.repository.api.clients.impl.model.Entry entry = client.getEntriesClient()
                 .getEntry(repoId, entryId, null).join();
         final String FILE_NAME = entry.getName() + ".txt";
