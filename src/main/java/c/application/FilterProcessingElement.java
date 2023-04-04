@@ -31,12 +31,14 @@ import java.nio.file.Paths;
         }
     public static List<Entry> nameFilter(List<Entry> entries, String key) {
         List<Entry> filteredNames = new ArrayList<>();
-        for(Entry entry: entries) {
-            if(entry.getClass().getName() == "com.laserfiche.repository.api.clients.impl.model.Document"){
+        for(Entry entryy: entries) {
+            if(entryy instanceof RemoteEntry){
+            RemoteEntry entry = (RemoteEntry)entryy;
             if(entry.getName().contains(key)){
             filteredNames.add(entry);
            }
-        } else {
+        } else if (entryy instanceof LocalEntry){
+            LocalEntry entry = (LocalEntry)entryy;
             if(entry.getName().contains(key)){
             filteredNames.add(entry);
            }
