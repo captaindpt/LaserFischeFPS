@@ -23,6 +23,7 @@ import java.nio.file.Paths;
  *
  * @author 98910
  */
+
   class FilterProcessingElement {
       //Operator enum used for lengthFilter
        public enum Operator{
@@ -342,6 +343,7 @@ import java.nio.file.Paths;
                 } catch(IOException e){
                     return false;
           }
+
     }
 }
 
