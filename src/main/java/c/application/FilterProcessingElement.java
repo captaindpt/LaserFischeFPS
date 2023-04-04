@@ -9,8 +9,7 @@ import com.laserfiche.repository.api.RepositoryApiClient;
 import com.laserfiche.repository.api.RepositoryApiClientImpl;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.BufferedReader;
-import com.laserfiche.repository.api.clients.impl.model.Entry; 
+import java.io.BufferedReader; 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -18,9 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.nio.file.Files;
 import java.util.function.Consumer;
-import com.laserfiche.repository.api.clients.*;
-import com.laserfiche.repository.api.clients.impl.EntriesClientImpl;
-import com.laserfiche.repository.api.clients.impl.model.ODataValueContextOfIListOfEntry;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -52,16 +48,18 @@ import java.nio.file.Paths;
      public static List<Entry> lengthFilter(List<Entry> entries, Long len, Operator operator) {
         String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
         String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
-		String repositoryId = "r-0001d410ba56";
                 AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
   RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
                 servicePrincipalKey, accessKey);
-        // Download a list of entries from Repo 
+          
         List<String> filteredContent = new ArrayList<>();
         for(Entry entryy: entries){
-            if (entryy.getClass().getName().toString() == "com.laserfiche.repository.api.clients.impl.model.Document"){
-        int entryIdToDownload = entryy.getId();
-        final String FILE_NAME = entryy.getName() + ".txt";
+            //Download Remote Entries
+            if (entryy instanceof RemoteEntry){
+                RemoteEntry entry = (RemoteEntry)entryy;
+        int entryIdToDownload = entry.getEntryID();
+        String repoID = entry.getRepoId();
+        final String FILE_NAME = entry.getName() + ".txt";
         Consumer<InputStream> consumer = inputStream -> {
             File exportedFile = new File(FILE_NAME);
             try (FileOutputStream outputStream = new FileOutputStream(exportedFile)) {
@@ -83,7 +81,7 @@ import java.nio.file.Paths;
                 }
             }
         };
-        client.getEntriesClient().exportDocument(repositoryId, entryIdToDownload, null, consumer).join();
+        client.getEntriesClient().exportDocument(repoID, entryIdToDownload, null, consumer).join();
         Path path = Paths.get(FILE_NAME);
         String pathstr = path.toAbsolutePath().toString();
         File file = new File(pathstr);
@@ -129,8 +127,9 @@ import java.nio.file.Paths;
                      break;
               }
             
-            } else {
-                String FILE_NAME = entryy.getName().toString();
+            } else if(entryy instanceof LocalEntry){
+                LocalEntry entry = (LocalEntry)entryy;
+                String FILE_NAME = entry.getName();
                 Path path = Paths.get(FILE_NAME);
         String pathstr = path.toAbsolutePath().toString();
         File file = new File(pathstr);
@@ -183,17 +182,19 @@ import java.nio.file.Paths;
     public static List<Entry> contentFilter(List<Entry> entries, String key) {
         String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
         String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
-		String repositoryId = "r-0001d410ba56";
+		
                 AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
-  RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
-                servicePrincipalKey, accessKey);
-        // Download a list of entries from Repo 
+                RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(servicePrincipalKey, accessKey);
+        // Download Remote Entries from Repo 
         List<String> filteredContent = new ArrayList<>();
         int count = 0;
         for(Entry entryy: entries){
+        if (entryy instanceof RemoteEntry){
+            RemoteEntry entry = (RemoteEntry)entryy;
             count++;
-        int entryIdToDownload = entryy.getId() ;
-        final String FILE_NAME = entryy.getName() + ".txt";
+        int entryIdToDownload = entry.getEntryID();
+        String RepoId = entry.getRepoId(); 
+        final String FILE_NAME = entry.getName() + ".txt";
         Consumer<InputStream> consumer = inputStream -> {
             File exportedFile = new File(FILE_NAME);
             try (FileOutputStream outputStream = new FileOutputStream(exportedFile)) {
@@ -215,7 +216,7 @@ import java.nio.file.Paths;
                 }
             }
         };
-        client.getEntriesClient().exportDocument(repositoryId, entryIdToDownload, null, consumer).join();
+        client.getEntriesClient().exportDocument(RepoId, entryIdToDownload, null, consumer).join();
         Path path = Paths.get(FILE_NAME);
         String pathstr = path.toAbsolutePath().toString();
         File file = new File(pathstr);
@@ -225,22 +226,28 @@ import java.nio.file.Paths;
                    System.out.println(file.getName());
                 }
             }
+        } else if (entryy instanceof LocalEntry){
+            LocalEntry entry = (LocalEntry)entryy;
         }
+       }
         client.close();
         return null; 
     }   
     public static List<Entry> countFilter(List<Entry> entries, String key, int min) {
         String servicePrincipalKey = "9_YVh_11HPvRIrThlsE7";
         String accessKeyBase64 = "ewoJImN1c3RvbWVySWQiOiAiMTQwMTM1OTIzOCIsCgkiY2xpZW50SWQiOiAiYzI3NWE0NTktNTg5My00M2JmLTk4NTktNzVjM2NjN2Q0NGIyIiwKCSJkb21haW4iOiAibGFzZXJmaWNoZS5jYSIsCgkiandrIjogewoJCSJrdHkiOiAiRUMiLAoJCSJjcnYiOiAiUC0yNTYiLAoJCSJ1c2UiOiAic2lnIiwKCQkia2lkIjogIjdfcW0wVE1wRl9PeGl3TF90V2Z4ZUZiYVZmRTg5d3RsVEtHNUpQb1FSU0kiLAoJCSJ4IjogIkNnVUpKN2Zzcmx0MEM0R3JGWHFIbDRhVm9NeU9vdG5Ud1JtOXBXeDExSlkiLAoJCSJ5IjogInBESlZfNzZWZ1AyU0d5Y2RmRXFKX3J5alpTZ1Z5THljZkdFaDcyV2ZmVUUiLAoJCSJkIjogIkF5UXM5eGZvLTBIS0J2bElnUTltZ09sOWo3cXBXMHN4UC1xU3kxV2V0Y1UiLAoJCSJpYXQiOiAxNjc3Mjk3NDUwCgl9Cn0=";
-		String repositoryId = "r-0001d410ba56";
+		
                 AccessKey accessKey = AccessKey.createFromBase64EncodedAccessKey(accessKeyBase64);
   RepositoryApiClient client = RepositoryApiClientImpl.createFromAccessKey(
                 servicePrincipalKey, accessKey);
         // Download a list of entries from Repo 
         List<String> filteredContent = new ArrayList<>();
         for(Entry entryy: entries){
-        int entryIdToDownload = entryy.getId() ;
-        final String FILE_NAME = entryy.getName() + ".txt";
+           if(entryy instanceof RemoteEntry){
+            RemoteEntry entry = (RemoteEntry)entryy;
+        int entryIdToDownload = entry.getEntryID() ;
+        String RepoId = entry.getRepoId();
+        final String FILE_NAME = entry.getName() + ".txt";
         Consumer<InputStream> consumer = inputStream -> {
             File exportedFile = new File(FILE_NAME);
             try (FileOutputStream outputStream = new FileOutputStream(exportedFile)) {
@@ -262,7 +269,7 @@ import java.nio.file.Paths;
                 }
             }
         };
-        client.getEntriesClient().exportDocument(repositoryId, entryIdToDownload, null, consumer).join();
+        client.getEntriesClient().exportDocument(RepoId, entryIdToDownload, null, consumer).join();
         Path path = Paths.get(FILE_NAME);
         String pathstr = path.toAbsolutePath().toString();
         File file = new File(pathstr);
@@ -272,7 +279,11 @@ import java.nio.file.Paths;
                    System.out.println(file.getName());
                     }
                 }
-            }
+            } else if (entryy instanceof LocalEntry){
+                LocalEntry entry = (LocalEntry)entryy;
+                
+        } 
+     }
         client.close();
         return null;
     }  
