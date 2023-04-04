@@ -34,7 +34,7 @@ import java.nio.file.Paths;
         for(Entry entryy: entries) {
             if(entryy instanceof RemoteEntry){
             RemoteEntry entry = (RemoteEntry)entryy;
-            if(entry.getName().contains(key)){
+            if(entryy.getName().contains(key)){
             filteredNames.add(entry);
            }
         } else if (entryy instanceof LocalEntry){
@@ -230,7 +230,7 @@ import java.nio.file.Paths;
             }
         } else if (entryy instanceof LocalEntry){
             LocalEntry entry = (LocalEntry)entryy;
-        }
+         }
        }
         client.close();
         return null; 
