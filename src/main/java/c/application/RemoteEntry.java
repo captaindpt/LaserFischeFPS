@@ -90,4 +90,8 @@ class RemoteEntry implements Entry {
     public boolean isDirectory() {
         return isDirectory;
     }
+    
+    public String getRepoId(){
+        return repoId;
+    }
 }
