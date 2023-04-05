@@ -1,0 +1,10 @@
+raspberry
+fig
+nectarine
+date
+apple
+quince
+strawberry
+raspberry
+honeydew
+orange

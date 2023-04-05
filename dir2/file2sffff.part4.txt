@@ -1,0 +1,10 @@
+quince
+grape
+strawberry
+nectarine
+fig
+elderberry
+kiwi
+banana
+apple
+date

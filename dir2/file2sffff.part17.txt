@@ -1,0 +1,10 @@
+mango
+lemon
+orange
+cherry
+date
+banana
+quince
+apple
+strawberry
+strawberry

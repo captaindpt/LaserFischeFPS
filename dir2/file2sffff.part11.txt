@@ -1,0 +1,10 @@
+fig
+raspberry
+strawberry
+pear
+kiwi
+lemon
+tangerine
+cherry
+watermelon
+watermelon

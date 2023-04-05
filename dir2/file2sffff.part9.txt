@@ -1,0 +1,10 @@
+fig
+pear
+elderberry
+pear
+quince
+lemon
+cherry
+honeydew
+elderberry
+tangerine
