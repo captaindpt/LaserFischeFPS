@@ -4,7 +4,9 @@
  */
 package c.application;
 
+
 import c.application.FilterProcessingElement.Operator;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -62,12 +64,14 @@ public class ScenarioProcessor {
                     }
                     case "Length Filter" -> {
                         String Operator1 = "";
+
                         long Length = 0;
                         for(JSONObject q : params){
                             if(q.get("name").equals("Length")){
                                 Length = Long.parseLong((String)q.get("value"));
                             }
                             if(q.get("name").equals("Operator")){
+
                                 Operator1 = (String)q.get("value");
                             }
                         }
