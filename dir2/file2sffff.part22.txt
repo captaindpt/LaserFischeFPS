@@ -1,0 +1,10 @@
+kiwi
+apple
+honeydew
+strawberry
+cherry
+lemon
+honeydew
+raspberry
+lemon
+fig

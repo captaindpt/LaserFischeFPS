@@ -69,6 +69,7 @@ class RemoteEntry implements Entry {
                 .exportDocument(repoId, entryId, null, consumer)
                 .join();
         Path path = Paths.get(FILE_NAME);
+        System.out.println(path.toAbsolutePath().toString());
            return path.toAbsolutePath().toString();  
     }  
     
@@ -90,4 +91,5 @@ class RemoteEntry implements Entry {
     public boolean isDirectory() {
         return isDirectory;
     }
+    
 }

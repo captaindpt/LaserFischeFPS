@@ -1,0 +1,10 @@
+apple
+cherry
+mango
+lemon
+banana
+orange
+tangerine
+nectarine
+grape
+pear

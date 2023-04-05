@@ -1,0 +1,10 @@
+quince
+mango
+fig
+banana
+tangerine
+nectarine
+fig
+date
+mango
+pear
